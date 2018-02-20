@@ -83,7 +83,6 @@ import ProjectReleaseTracking from './views/projectReleaseTracking';
 import ProjectReleases from './views/projectReleases';
 import ProjectSavedSearches from './views/projectSavedSearches';
 import ProjectSettings from './views/projectSettings';
-import ProjectUserReportSettings from './views/projectUserReportSettings';
 import ProjectUserReports from './views/projectUserReports';
 import ProjectPlugins from './views/projectPlugins';
 import ProjectPluginDetails from './views/projectPluginDetails';
@@ -362,7 +361,9 @@ const projectSettingsRoutes = [
     key="user-feedback/"
     path="user-feedback/"
     name="User Feedback"
-    component={errorHandler(ProjectUserReportSettings)}
+    componentPromise={() =>
+      import(/*webpackChunkName: "ProjectUserFeedbackSettings"*/ './views/settings/project/projectUserFeedback')}
+    component={errorHandler(LazyLoad)}
   />,
   <Route
     key="csp/"
