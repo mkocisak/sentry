@@ -283,18 +283,10 @@ class Project(Model):
         return is_enabled
 
     def transfer_to(self, team):
-        from sentry.models import ProjectTeam, ReleaseProject
+        from sentry.models import ProjectTeam, ReleaseProject, EnvironmentProject
 
         organization = team.organization
         from_team_id = self.team_id
-
-        # We only need to delete ReleaseProjects when moving to a different
-        # Organization. Releases are bound to Organization, so it's not realistic
-        # to keep this link unless we say, copied all Releases as well.
-        if self.organization_id != organization.id:
-            ReleaseProject.objects.filter(
-                project_id=self.id,
-            ).delete()
 
         self.organization = organization
         self.team = team
@@ -312,6 +304,15 @@ class Project(Model):
                 organization=organization,
                 team=team,
             )
+
+        # We only need to delete ReleaseProjects when moving to a different
+        # Organization. Releases are bound to Organization, so it's not realistic
+        # to keep this link unless we say, copied all Releases as well.
+        if self.organization_id != organization.id:
+            for model in ReleaseProject, EnvironmentProject:
+                model.objects.filter(
+                    project_id=self.id,
+                ).delete()
 
         ProjectTeam.objects.filter(project=self, team_id=from_team_id).update(team=team)
 
