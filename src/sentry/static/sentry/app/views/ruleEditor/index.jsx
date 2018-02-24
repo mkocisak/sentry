@@ -1,22 +1,24 @@
+import $ from 'jquery';
+import {browserHistory} from 'react-router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import createReactClass from 'create-react-class';
-import {browserHistory} from 'react-router';
-import $ from 'jquery';
 import styled from 'react-emotion';
 
-import ApiMixin from '../../mixins/apiMixin';
+import {Select2Field} from '../../components/forms';
 import {
   addErrorMessage,
   addSuccessMessage,
   addMessage,
 } from '../../actionCreators/indicator';
-import {Select2Field} from '../../components/forms';
 import {t} from '../../locale';
-import LoadingIndicator from '../../components/loadingIndicator';
-import RuleNodeList from './ruleNodeList';
-
+import ApiMixin from '../../mixins/apiMixin';
 import EnvironmentStore from '../../stores/environmentStore';
+import LoadingIndicator from '../../components/loadingIndicator';
+import Panel from '../settings/components/panel';
+import PanelBody from '../settings/components/panelBody';
+import PanelHeader from '../settings/components/panelHeader';
+import RuleNodeList from './ruleNodeList';
 
 const FREQUENCY_CHOICES = [
   ['5', t('5 minutes')],
@@ -189,11 +191,9 @@ const RuleEditor = createReactClass({
 
     return (
       <form onSubmit={this.onSubmit} ref={node => (this.formNode = node)}>
-        <div className="box rule-detail">
-          <div className="box-header">
-            <h3>{rule.id ? 'Edit Alert Rule' : 'New Alert Rule'}</h3>
-          </div>
-          <div className="box-content with-padding">
+        <Panel className="rule-detail">
+          <PanelHeader>{rule.id ? 'Edit Alert Rule' : 'New Alert Rule'}</PanelHeader>
+          <PanelBody disablePadding={false}>
             {error && (
               <div className="alert alert-block alert-error">
                 <p>
@@ -299,8 +299,8 @@ const RuleEditor = createReactClass({
                 {t('Save Rule')}
               </button>
             </div>
-          </div>
-        </div>
+          </PanelBody>
+        </Panel>
       </form>
     );
   },
